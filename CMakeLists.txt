@@ -4,7 +4,7 @@ project(TeleTools LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 6.4 COMPONENTS Widgets REQUIRED)
 qt_standard_project_setup()
 
 set(PROJECT_SOURCES
