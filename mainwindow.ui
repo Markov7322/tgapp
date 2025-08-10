@@ -62,6 +62,7 @@
           </item>
           <item>
            <widget class="QPushButton" name="btnSavePosts">
+            <property name="enabled"><bool>false</bool></property>
             <property name="text">
              <string>Сохранить…</string>
             </property>
@@ -134,11 +135,13 @@
          <layout class="QHBoxLayout" name="hbox3">
           <item>
            <widget class="QPushButton" name="btnRunContacts">
+            <property name="enabled"><bool>false</bool></property>
             <property name="text"><string>Собрать контакты</string></property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btnSaveContacts">
+            <property name="enabled"><bool>false</bool></property>
             <property name="text"><string>Сохранить…</string></property>
            </widget>
           </item>

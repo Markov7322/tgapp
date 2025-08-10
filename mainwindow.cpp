@@ -38,6 +38,11 @@ void MainWindow::wireUi() {
     ui->spinMaxDelay->setRange(0, 1200);  ui->spinMaxDelay->setValue(8);
     ui->spinMaxErrors->setRange(0, 1000); ui->spinMaxErrors->setValue(20);
     ui->checkSkipProcessed->setChecked(true);
+
+    // disable actions that require data
+    ui->btnSavePosts->setEnabled(false);
+    ui->btnRunContacts->setEnabled(false);
+    ui->btnSaveContacts->setEnabled(false);
 }
 
 // ── Посты (заглушки) ───────────────────────────────────────────
@@ -48,6 +53,7 @@ void MainWindow::onCollectPosts() {
         return;
     }
     ui->btnCollectPosts->setEnabled(false);
+    ui->btnSavePosts->setEnabled(false);
     ui->labelPostsStatus->setText("Сбор…");
     ui->progressPosts->setValue(0);
 
@@ -104,6 +110,8 @@ void MainWindow::onPickPostsFile() {
         while (!in.atEnd()) m_posts << in.readLine().trimmed();
     }
     ui->labelContactsStatus->setText(QString("Постов: %1").arg(m_posts.size()));
+    ui->btnRunContacts->setEnabled(!m_posts.isEmpty());
+    ui->btnSaveContacts->setEnabled(false);
 }
 
 void MainWindow::onRunCollectContacts() {
@@ -112,6 +120,7 @@ void MainWindow::onRunCollectContacts() {
         return;
     }
     ui->btnRunContacts->setEnabled(false);
+    ui->btnSaveContacts->setEnabled(false);
     ui->labelContactsStatus->setText("Сбор…");
     ui->progressContacts->setValue(0);
 
