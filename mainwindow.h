@@ -1,5 +1,11 @@
 #pragma once
 #include <QMainWindow>
+#include <QStringList>
+#include <QVariantList>
+
+#include "collectpostsworker.h"
+#include "collectcontactsworker.h"
+#include "dispatchworker.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,4 +35,12 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void wireUi();
+
+    // runtime data
+    QStringList m_posts;
+    QVariantList m_contacts;
+
+    CollectPostsWorker *m_postsWorker = nullptr;
+    CollectContactsWorker *m_contactsWorker = nullptr;
+    DispatchWorker *m_dispatchWorker = nullptr;
 };

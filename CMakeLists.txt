@@ -12,6 +12,12 @@ set(PROJECT_SOURCES
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    collectpostsworker.cpp
+    collectpostsworker.h
+    collectcontactsworker.cpp
+    collectcontactsworker.h
+    dispatchworker.cpp
+    dispatchworker.h
 )
 
 qt_add_executable(${PROJECT_NAME}

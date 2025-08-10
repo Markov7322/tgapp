@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QFile>
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -45,41 +47,119 @@ void MainWindow::onCollectPosts() {
         QMessageBox::warning(this, "Ошибка", "Введите https://t.me/<username>");
         return;
     }
-    ui->labelPostsStatus->setText("Собираем посты… (демо)");
-    ui->progressPosts->setMaximum(100);
-    ui->progressPosts->setValue(100);
-    // TODO: здесь будет вызов Telegram-логики (TDLib)
-    QMessageBox::information(this, "Демо", "Каркас готов. Telegram подключим на следующем шаге.");
+    ui->btnCollectPosts->setEnabled(false);
+    ui->labelPostsStatus->setText("Сбор…");
+    ui->progressPosts->setValue(0);
+
+    m_postsWorker = new CollectPostsWorker(url, this);
+    connect(m_postsWorker, &CollectPostsWorker::progress, this, [=](int d, int t){
+        ui->progressPosts->setMaximum(t);
+        ui->progressPosts->setValue(d);
+        ui->labelPostsStatus->setText(QString("%1 / %2").arg(d).arg(t));
+    });
+    connect(m_postsWorker, &CollectPostsWorker::finished, this, [=]{
+        m_posts = m_postsWorker->posts();
+        ui->labelPostsStatus->setText(QString("Готово: %1").arg(m_posts.size()));
+        ui->btnSavePosts->setEnabled(!m_posts.isEmpty());
+        m_postsWorker->deleteLater();
+        m_postsWorker = nullptr;
+        ui->btnCollectPosts->setEnabled(true);
+    });
+    connect(m_postsWorker, &CollectPostsWorker::error, this, [=](const QString &msg){
+        QMessageBox::critical(this, "Ошибка", msg);
+        m_postsWorker->deleteLater();
+        m_postsWorker = nullptr;
+        ui->btnCollectPosts->setEnabled(true);
+    });
+    m_postsWorker->start();
 }
 
 void MainWindow::onSavePosts() {
-    QString fn = QFileDialog::getSaveFileName(this, "Сохранить ссылки", "", "CSV (*.csv);;Excel (*.xlsx)");
+    if (m_posts.isEmpty()) {
+        QMessageBox::warning(this, "Пусто", "Нет данных для сохранения");
+        return;
+    }
+    QString fn = QFileDialog::getSaveFileName(this, "Сохранить ссылки", "", "CSV (*.csv)");
     if (fn.isEmpty()) return;
-    QMessageBox::information(this, "Демо", "Сохранение реализуем после подключения данных.");
+    if (!fn.endsWith(".csv", Qt::CaseInsensitive)) fn += ".csv";
+    QFile f(fn);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Ошибка", f.errorString());
+        return;
+    }
+    QTextStream out(&f);
+    for (const auto &p : m_posts) out << p << "\n";
+    QMessageBox::information(this, "Готово", "Ссылки сохранены");
 }
 
 // ── Контакты (заглушки) ───────────────────────────────────────
 void MainWindow::onPickPostsFile() {
-    QString fn = QFileDialog::getOpenFileName(this, "Открыть список постов", "", "Excel/CSV (*.xlsx *.csv)");
+    QString fn = QFileDialog::getOpenFileName(this, "Открыть список постов", "", "CSV (*.csv)");
     if (fn.isEmpty()) return;
     ui->linePostsFile->setText(fn);
-    ui->labelContactsStatus->setText("Файл загружен");
+    m_posts.clear();
+    QFile f(fn);
+    if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&f);
+        while (!in.atEnd()) m_posts << in.readLine().trimmed();
+    }
+    ui->labelContactsStatus->setText(QString("Постов: %1").arg(m_posts.size()));
 }
 
 void MainWindow::onRunCollectContacts() {
-    if (ui->linePostsFile->text().isEmpty()) {
-        QMessageBox::warning(this, "Ошибка", "Выберите файл постов");
+    if (m_posts.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Загрузите список постов");
         return;
     }
-    ui->labelContactsStatus->setText("Сбор контактов… (демо)");
-    ui->progressContacts->setMaximum(100);
-    ui->progressContacts->setValue(100);
+    ui->btnRunContacts->setEnabled(false);
+    ui->labelContactsStatus->setText("Сбор…");
+    ui->progressContacts->setValue(0);
+
+    m_contactsWorker = new CollectContactsWorker(m_posts, this);
+    connect(m_contactsWorker, &CollectContactsWorker::progress, this, [=](int d, int t){
+        ui->progressContacts->setMaximum(t);
+        ui->progressContacts->setValue(d);
+    });
+    connect(m_contactsWorker, &CollectContactsWorker::finished, this, [=]{
+        m_contacts = m_contactsWorker->data();
+        ui->labelContactsStatus->setText(QString("Найдено: %1").arg(m_contacts.size()));
+        ui->btnSaveContacts->setEnabled(!m_contacts.isEmpty());
+        ui->btnRunContacts->setEnabled(true);
+        m_contactsWorker->deleteLater();
+        m_contactsWorker = nullptr;
+    });
+    connect(m_contactsWorker, &CollectContactsWorker::error, this, [=](const QString &msg){
+        QMessageBox::critical(this, "Ошибка", msg);
+        ui->btnRunContacts->setEnabled(true);
+        m_contactsWorker->deleteLater();
+        m_contactsWorker = nullptr;
+    });
+    m_contactsWorker->start();
 }
 
 void MainWindow::onSaveContacts() {
-    QString fn = QFileDialog::getSaveFileName(this, "Сохранить контакты", "", "CSV (*.csv);;Excel (*.xlsx)");
+    if (m_contacts.isEmpty()) {
+        QMessageBox::warning(this, "Пусто", "Нет данных");
+        return;
+    }
+    QString fn = QFileDialog::getSaveFileName(this, "Сохранить контакты", "", "CSV (*.csv)");
     if (fn.isEmpty()) return;
-    QMessageBox::information(this, "Демо", "Сохранение реализуем после подключения данных.");
+    if (!fn.endsWith(".csv", Qt::CaseInsensitive)) fn += ".csv";
+    QFile f(fn);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Ошибка", f.errorString());
+        return;
+    }
+    QTextStream out(&f);
+    QStringList headers = {"user_id","username","first_name","last_name","t.me_link"};
+    out << headers.join(',') << "\n";
+    for (const auto &var : m_contacts) {
+        const auto map = var.toMap();
+        QStringList row;
+        for (const auto &h : headers) row << map.value(h).toString();
+        out << row.join(',') << "\n";
+    }
+    QMessageBox::information(this, "Готово", "Контакты сохранены");
 }
 
 // ── Рассылка/Инвайт (заглушки) ────────────────────────────────
@@ -109,7 +189,28 @@ void MainWindow::onStartDispatch() {
         QMessageBox::warning(this, "Ошибка", "Введите текст сообщения для рассылки");
         return;
     }
-    ui->progressDispatch->setMaximum(100);
-    ui->progressDispatch->setValue(100);
-    ui->textLog->appendPlainText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "  Демо запуск OK");
+    ui->btnStart->setEnabled(false);
+    ui->progressDispatch->setValue(0);
+    ui->textLog->clear();
+
+    DispatchWorker::Mode mode = ui->comboMode->currentText() == "invite" ? DispatchWorker::Invite : DispatchWorker::Message;
+    m_dispatchWorker = new DispatchWorker(mode,
+                                         ui->lineUsersFile->text(),
+                                         ui->lineGroup->text(),
+                                         ui->textMessage->toPlainText(),
+                                         this);
+    connect(m_dispatchWorker, &DispatchWorker::progress, this, [=](int d, int t){
+        ui->progressDispatch->setMaximum(t);
+        ui->progressDispatch->setValue(d);
+    });
+    connect(m_dispatchWorker, &DispatchWorker::log, this, [=](const QString &txt){
+        ui->textLog->appendPlainText(txt);
+    });
+    connect(m_dispatchWorker, &DispatchWorker::finished, this, [=]{
+        ui->btnStart->setEnabled(true);
+        m_dispatchWorker->deleteLater();
+        m_dispatchWorker = nullptr;
+        ui->textLog->appendPlainText("Готово");
+    });
+    m_dispatchWorker->start();
 }
