@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowTitle">
+   <string>TeleTools</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+
+      <!-- TAB 1: Посты -->
+      <widget class="QWidget" name="tabPosts">
+       <attribute name="title">
+        <string>Посты</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_1">
+        <item>
+         <layout class="QFormLayout" name="formLayout_1">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_1">
+            <property name="text">
+             <string>Канал:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineChannel">
+            <property name="placeholderText">
+             <string>https://t.me/username</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Статус:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelPostsStatus">
+            <property name="text">
+             <string>Готов</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="hbox1">
+          <item>
+           <widget class="QPushButton" name="btnCollectPosts">
+            <property name="text">
+             <string>Собрать посты</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSavePosts">
+            <property name="text">
+             <string>Сохранить…</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="sp1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size><width>40</width><height>20</height></size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressPosts">
+          <property name="textVisible"><bool>false</bool></property>
+          <property name="value"><number>0</number></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+
+      <!-- TAB 2: Контакты -->
+      <widget class="QWidget" name="tabContacts">
+       <attribute name="title">
+        <string>Контакты</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Файл постов:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="hbox2">
+            <item>
+             <widget class="QLineEdit" name="linePostsFile">
+              <property name="readOnly"><bool>true</bool></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnPickPostsFile">
+              <property name="text"><string>📂</string></property>
+              <property name="maximumWidth"><number>40</number></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text"><string>Статус:</string></property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelContactsStatus">
+            <property name="text"><string>Готов</string></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="hbox3">
+          <item>
+           <widget class="QPushButton" name="btnRunContacts">
+            <property name="text"><string>Собрать контакты</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSaveContacts">
+            <property name="text"><string>Сохранить…</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="sp2">
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0">
+             <size><width>40</width><height>20</height></size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressContacts">
+          <property name="textVisible"><bool>false</bool></property>
+          <property name="value"><number>0</number></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+
+      <!-- TAB 3: Рассылка/Инвайт -->
+      <widget class="QWidget" name="tabDispatch">
+       <attribute name="title">
+        <string>Рассылка / Инвайт</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0"><widget class="QLabel" name="label_5"><property name="text"><string>Режим:</string></property></widget></item>
+          <item row="0" column="1"><widget class="QComboBox" name="comboMode"/></item>
+
+          <item row="1" column="0"><widget class="QLabel" name="label_6"><property name="text"><string>Группа (для invite):</string></property></widget></item>
+          <item row="1" column="1"><widget class="QLineEdit" name="lineGroup"><property name="placeholderText"><string>@group_or_channel</string></property></widget></item>
+
+          <item row="2" column="0"><widget class="QLabel" name="label_7"><property name="text"><string>Сообщение (для message):</string></property></widget></item>
+          <item row="2" column="1"><widget class="QPlainTextEdit" name="textMessage"/></item>
+
+          <item row="3" column="0"><widget class="QLabel" name="label_8"><property name="text"><string>Файл пользователей:</string></property></widget></item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="hbox4">
+            <item><widget class="QLineEdit" name="lineUsersFile"><property name="readOnly"><bool>true</bool></property></widget></item>
+            <item><widget class="QPushButton" name="btnPickUsersFile"><property name="text"><string>📂</string></property><property name="maximumWidth"><number>40</number></property></widget></item>
+           </layout>
+          </item>
+
+          <item row="4" column="0"><widget class="QLabel" name="label_9"><property name="text"><string>Лимит в час:</string></property></widget></item>
+          <item row="4" column="1"><widget class="QSpinBox" name="spinPerHour"/></item>
+
+          <item row="5" column="0"><widget class="QLabel" name="label_10"><property name="text"><string>Лимит в сутки:</string></property></widget></item>
+          <item row="5" column="1"><widget class="QSpinBox" name="spinPerDay"/></item>
+
+          <item row="6" column="0"><widget class="QLabel" name="label_11"><property name="text"><string>Задержка мин, сек:</string></property></widget></item>
+          <item row="6" column="1"><widget class="QSpinBox" name="spinMinDelay"/></item>
+
+          <item row="7" column="0"><widget class="QLabel" name="label_12"><property name="text"><string>Задержка макс, сек:</string></property></widget></item>
+          <item row="7" column="1"><widget class="QSpinBox" name="spinMaxDelay"/></item>
+
+          <item row="8" column="0"><widget class="QLabel" name="label_13"><property name="text"><string>Макс. ошибок:</string></property></widget></item>
+          <item row="8" column="1"><widget class="QSpinBox" name="spinMaxErrors"/></item>
+
+          <item row="9" column="0"><widget class="QLabel" name="label_14"><property name="text"><string>Пропускать обработанных:</string></property></widget></item>
+          <item row="9" column="1"><widget class="QCheckBox" name="checkSkipProcessed"/></item>
+
+          <item row="10" column="0"><widget class="QLabel" name="label_15"><property name="text"><string>Лог-файл CSV:</string></property></widget></item>
+          <item row="10" column="1">
+           <layout class="QHBoxLayout" name="hbox5">
+            <item><widget class="QLineEdit" name="lineLogFile"><property name="readOnly"><bool>true</bool></property></widget></item>
+            <item><widget class="QPushButton" name="btnPickLogFile"><property name="text"><string>📁</string></property><property name="maximumWidth"><number>40</number></property></widget></item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+
+        <item><widget class="QProgressBar" name="progressDispatch"><property name="textVisible"><bool>false</bool></property><property name="value"><number>0</number></property></widget></item>
+        <item><widget class="QPlainTextEdit" name="textLog"/></item>
+        <item><widget class="QPushButton" name="btnStart"><property name="text"><string>Запустить</string></property></widget></item>
+       </layout>
+      </widget>
+
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

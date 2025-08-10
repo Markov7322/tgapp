@@ -1,0 +1,9 @@
+# ninja log v6
+4	436	7765332131335944	TeleTools_autogen/timestamp	b728c38e2d131aa6
+4	436	7765332131335944	TeleTools_autogen/mocs_compilation.cpp	b728c38e2d131aa6
+4	436	7765332131335944	C:/Users/gabic/Documents/TeleTools/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/TeleTools_autogen/timestamp	b728c38e2d131aa6
+4	436	7765332131335944	C:/Users/gabic/Documents/TeleTools/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/TeleTools_autogen/mocs_compilation.cpp	b728c38e2d131aa6
+439	1501	7765332131791427	CMakeFiles/TeleTools.dir/TeleTools_autogen/mocs_compilation.cpp.obj	8a1434ce039dc9df
+441	1512	7765332131801427	CMakeFiles/TeleTools.dir/main.cpp.obj	cd8836fd9bc6ba3a
+443	2111	7765332131821425	CMakeFiles/TeleTools.dir/mainwindow.cpp.obj	3f7ce4ab7255404a
+2111	2276	7765332148511171	TeleTools.exe	c4760101146426de
